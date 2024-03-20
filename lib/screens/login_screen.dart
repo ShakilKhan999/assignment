@@ -1,6 +1,10 @@
+import 'package:assignment/controller/userController.dart';
+import 'package:assignment/screens/dashboard.dart';
+import 'package:assignment/screens/question_form.dart';
 import 'package:assignment/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
+  UserController userController=Get.put(UserController());
   final IconData iconData = Icons.visibility;
   bool activeConnection = false;
   bool visiblepass = false;
@@ -148,7 +153,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                   BorderRadius.circular(10), // <-- Radius
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            userController.login(
+                                emailController.text,
+                                passwordController.text).then((value) async{
+                                  await userController.fetchUserData(userController.userId.value);
+                                  value?
+                                  userController.UserData[0].data[0].fullName.length>0?
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const DashboardScreen(),
+                                      )):
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const QuestionForm(),
+                                      ))
+                                      :userController.showToast("Login Failed");
+                            });
+                          },
                           child: Text(
                             'Login',
                             style:

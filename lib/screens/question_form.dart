@@ -1,7 +1,9 @@
+import 'package:assignment/controller/userController.dart';
 import 'package:assignment/screens/dashboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class QuestionForm extends StatefulWidget {
@@ -12,10 +14,11 @@ class QuestionForm extends StatefulWidget {
 }
 
 class _QuestionFormState extends State<QuestionForm> {
-  TextEditingController weightController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   TextEditingController PhoneController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
   TextEditingController heightController = TextEditingController();
+  UserController userController=Get.put(UserController());
   final sDateFormate = "dd/MM/yyyy";
   DateTime _dateTime = DateTime.now();
   bool agreeToTerms = false;
@@ -121,7 +124,7 @@ class _QuestionFormState extends State<QuestionForm> {
                         ),
                         child: Center(
                           child: TextField(
-                            controller: weightController,
+                            controller: nameController,
                             decoration: InputDecoration(
                               hintText: 'Full Name',
                               hintStyle: TextStyle(
@@ -383,11 +386,24 @@ class _QuestionFormState extends State<QuestionForm> {
                       padding: EdgeInsets.only(bottom: 40.h),
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DashboardScreen(),
-                              ));
+                          userController.updateUser(
+                              userId: userController.userId.value??"",
+                              fullName: nameController.text,
+                              dateOfBirth:_dateTime.toString() ,
+                              gender: selectedGender??'N/A',
+                              agreeToMarketing: agreeToTerms,
+                              correspond: _correspondInWelsh,
+                              updatedAt: DateTime.now().toString()).then((value) async{
+                                await userController.fetchUserData(userController.userId.value);
+                                if(value){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const DashboardScreen(),
+                                      ));
+                                }
+                          });
+
                         },
                         child: Container(
                           width: 200.w,

@@ -1,7 +1,9 @@
+import 'package:assignment/controller/userController.dart';
 import 'package:assignment/screens/login_screen.dart';
 import 'package:assignment/screens/question_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,6 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
+  UserController userController=Get.put(UserController());
   final IconData iconData = Icons.visibility;
   bool activeConnection = false;
   bool visiblepass = false;
@@ -69,29 +72,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(
                         height: 20.h,
                       ),
-                      SizedBox(
-                        height: 50.h,
-                        child: TextField(
-                          controller: phoneController,
-                          decoration: const InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color(0xFF0a7bc4), width: 1.2)),
-                            prefixIcon: Icon(Icons.phone_iphone_sharp,
-                                color: Color(0xFF0a7bc4)),
-                            labelText: 'Phone',
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.black, width: 1.2)),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.black, width: 1.2)),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
+                      // SizedBox(
+                      //   height: 50.h,
+                      //   child: TextField(
+                      //     controller: phoneController,
+                      //     decoration: const InputDecoration(
+                      //       focusedBorder: OutlineInputBorder(
+                      //           borderSide: BorderSide(
+                      //               color: Color(0xFF0a7bc4), width: 1.2)),
+                      //       prefixIcon: Icon(Icons.phone_iphone_sharp,
+                      //           color: Color(0xFF0a7bc4)),
+                      //       labelText: 'Phone',
+                      //       enabledBorder: OutlineInputBorder(
+                      //           borderSide: BorderSide(
+                      //               color: Colors.black, width: 1.2)),
+                      //       border: OutlineInputBorder(
+                      //           borderSide: BorderSide(
+                      //               color: Colors.black, width: 1.2)),
+                      //     ),
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   height: 20.h,
+                      // ),
                       SizedBox(
                         height: 50.h,
                         child: TextFormField(
@@ -143,11 +146,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const QuestionForm(),
-                              ));
+                          userController.createUser(email: emailController.text, password: passwordController.text).then((value) {
+                            if(userController.registrationDone.value)
+                              {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const QuestionForm(),
+                                    ));
+                              }
+                          });
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width,

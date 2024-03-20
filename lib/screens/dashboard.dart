@@ -1,6 +1,9 @@
+import 'package:assignment/controller/userController.dart';
+import 'package:assignment/repo/userRepository.dart';
 import 'package:assignment/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -10,8 +13,18 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  UserController userController=Get.put(UserController());
+  @override
+  void initState() {
+getAdress();
+    super.initState();
+  }
+  void getAdress() async{
+    userController.address.value=await UserRepository().getPlaceName(0.0, 0.0);
+  }
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.white,
@@ -58,25 +71,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       SizedBox(
                         width: 13.w,
                       ),
-                      Column(
+                      Obx(()=>Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'First Name: Meraz',
-                            style:
-                                TextStyle(fontSize: 20.sp, color: Colors.white),
+                          SizedBox(
+                            width:170.w,
+                            child: Text(
+                              'First Name: ${userController.UserData[0].data[0].fullName.toString().contains(' ')?
+                              userController.UserData[0].data[0].fullName.toString().split(' ')[0]:
+                              userController.UserData[0].data[0].fullName.toString()}',
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                              TextStyle(fontSize: 20.sp, color: Colors.white),
+                            ),
                           ),
                           SizedBox(
                             height: 3.h,
                           ),
-                          Text(
-                            'Last Name: Islam',
-                            style:
-                                TextStyle(fontSize: 15.sp, color: Colors.white),
+                          SizedBox(
+                            width:170.w,
+                            child: Text(
+                              'Last Name: ${userController.UserData[0].data[0].fullName.toString().contains(' ')?
+                              userController.UserData[0].data[0].fullName.toString().split(' ')[1]:
+                              userController.UserData[0].data[0].fullName.toString()}',
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                              TextStyle(fontSize: 15.sp, color: Colors.white),
+                            ),
                           ),
                         ],
-                      )
+                      ))
                     ],
                   ),
                 ),
@@ -96,7 +121,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Date of Birth: 12/01/2000',
+                      'Date of Birth: ${userController.UserData[0].data[0].dateOfBirth.toString().substring(0,11)}',
                       textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 14.sp),
                     ),
@@ -118,7 +143,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Email: meraz@gmail.com',
+                      'Email: ${userController.UserData[0].data[0].email}',
                       textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 14.sp),
                     ),
@@ -140,7 +165,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Gender: Male',
+                      'Gender: ${userController.UserData[0].data[0].gender}',
                       textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 14.sp),
                     ),
@@ -162,7 +187,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Subject of Interest: Mathematics',
+                      'Subject of Interest: ${userController.UserData[0].data[0].subjectCategory!=null && userController.UserData[0].data[0].subjectCategory.length!=0?
+                          userController.UserData[0].data[0].subjectCategory[0]:''}',
                       textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 14.sp),
                     ),
@@ -184,7 +210,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Location: UK',
+                      'Location: ${userController.UserData[0].data[0].latitude}  ${userController.UserData[0].data[0].longitude}',
                       textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 14.sp),
                     ),
