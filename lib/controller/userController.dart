@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class UserController extends GetxController {
@@ -124,4 +125,19 @@ class UserController extends GetxController {
       return null;
     }
   }
+  String formatDate(String inputDate) {
+    // Parse the inputDate string to DateTime
+    DateTime dateTime = DateFormat("dd/MM/yyyy").parse(inputDate);
+
+    // Format the DateTime to desired format
+    String formattedDate = DateFormat("d MMMM y").format(dateTime);
+
+    // Convert the first letter of month to uppercase
+    formattedDate = formattedDate.replaceRange(0, 1, formattedDate[0].toUpperCase());
+
+
+
+    return formattedDate;
+  }
+
 }

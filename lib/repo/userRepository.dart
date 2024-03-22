@@ -21,7 +21,7 @@ class UserRepository {
     EasyLoading.show();
     var headers = {'Content-Type': 'application/json'};
     var request = http.Request('POST',
-        Uri.parse('https://tiny-jade-chicken-hose.cyclic.app/api/v1/user'));
+        Uri.parse('https://defiant-foal-tank-top.cyclic.app/api/v1/user'));
     request.body = json.encode({
       "SubjectCategory": [],
       "email": email.trim(),
@@ -55,7 +55,7 @@ class UserRepository {
 
   Future<UserModel?> fetchUserData(String userId) async {
     final url = Uri.parse(
-        'https://tiny-jade-chicken-hose.cyclic.app/api/v1/user/$userId');
+        'https://defiant-foal-tank-top.cyclic.app/api/v1/user/$userId');
 
     final response = await http.get(url);
 
@@ -82,7 +82,7 @@ class UserRepository {
     var request = http.Request(
         'GET',
         Uri.parse(
-            'https://tiny-jade-chicken-hose.cyclic.app/api/v1/user/log-in'));
+            'https://defiant-foal-tank-top.cyclic.app/api/v1/user/log-in'));
     request.body = json.encode({
       "email": email.trim(),
       "password": password,
@@ -133,7 +133,7 @@ class UserRepository {
     var request = http.Request(
       'PATCH',
       Uri.parse(
-          'https://tiny-jade-chicken-hose.cyclic.app/api/v1/user/update-user-by-id/$userId'),
+          'https://defiant-foal-tank-top.cyclic.app/api/v1/user/update-user-by-id/$userId'),
     );
     request.body = json.encode({
       "SubjectCategory": subjects,
