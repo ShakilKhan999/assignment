@@ -401,8 +401,10 @@ class _QuestionFormState extends State<QuestionForm> {
                                        underline: Container(),
                                        items: <String>[
                                          'Mathematics',
-                                         'Science',
+                                         'Computer Science'
+                                         'Social Science',
                                          'History',
+                                         'Accounting and Finance'
                                        ].map<DropdownMenuItem<String>>((String value) {
                                          return DropdownMenuItem<String>(
                                            value: value,

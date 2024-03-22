@@ -215,7 +215,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                                       'Please fill up email and password fields.'),
                                                                 ),
                                                               );
-                                                            } else {
+                                                            }
+                                                            else if(userController.isValidEmail(emailController.text)==false){
+                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                SnackBar(
+                                                                  content: Text(
+                                                                      'Please enter a valid email'),
+                                                                ),
+                                                              );
+                                                            }
+                                                            else {
                                                               await userController
                                                                   .createUser(
                                                                   email: emailController.text,
