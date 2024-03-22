@@ -16,7 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
-  UserController userController=Get.put(UserController());
+  UserController userController = Get.put(UserController());
   final IconData iconData = Icons.visibility;
   bool activeConnection = false;
   bool visiblepass = false;
@@ -145,17 +145,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: 20.h,
                       ),
                       InkWell(
-                        onTap: () {
-                          userController.createUser(email: emailController.text, password: passwordController.text).then((value) {
-                            if(userController.registrationDone.value)
-                              {
-                                Navigator.push(
+                        onTap: () async {
+                          if (emailController.text.isEmpty ||
+                              passwordController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Please fill up email and password fields.'),
+                              ),
+                            );
+                          } else {
+                            await userController
+                                .createUser(
+                                    email: emailController.text,
+                                    password: passwordController.text)
+                                .then((value) {
+                              if (value) {
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const QuestionForm(),
+                                      builder: (context) =>
+                                          const QuestionForm(),
                                     ));
                               }
-                          });
+                            });
+                          }
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width,
@@ -193,7 +207,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => const LoginScreen(),

@@ -18,7 +18,7 @@ class _QuestionFormState extends State<QuestionForm> {
   TextEditingController PhoneController = TextEditingController();
   TextEditingController EmailController = TextEditingController();
   TextEditingController heightController = TextEditingController();
-  UserController userController=Get.put(UserController());
+  UserController userController = Get.put(UserController());
   final sDateFormate = "dd/MM/yyyy";
   DateTime _dateTime = DateTime.now();
   bool agreeToTerms = false;
@@ -386,24 +386,38 @@ class _QuestionFormState extends State<QuestionForm> {
                       padding: EdgeInsets.only(bottom: 40.h),
                       child: InkWell(
                         onTap: () {
+                          if (calculateDifferenceInYears(
+                                  DateTime.now(), _dateTime) <
+                              16) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Age should be 16 year'),
+                              ),
+                            );
+                            return;
+                          }
                           userController.updateUser(
-                              userId: userController.userId.value??"",
+                              userId: userController.userId.value ?? "",
                               fullName: nameController.text,
-                              dateOfBirth:_dateTime.toString() ,
-                              gender: selectedGender??'N/A',
+                              dateOfBirth: _dateTime.toString(),
+                              gender: selectedGender ?? 'N/A',
                               agreeToMarketing: agreeToTerms,
-                              correspond: _correspondInWelsh,
-                              updatedAt: DateTime.now().toString()).then((value) async{
-                                await userController.fetchUserData(userController.userId.value);
-                                if(value){
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const DashboardScreen(),
-                                      ));
-                                }
+                              correspond: welsh,
+                              updatedAt: DateTime.now().toString(),
+                              sub: [
+                                selectedSubject == null ? '' : selectedSubject!
+                              ]).then((value) async {
+                            await userController
+                                .fetchUserData(userController.userId.value);
+                            if (value) {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const DashboardScreen(),
+                                  ));
+                            }
                           });
-
                         },
                         child: Container(
                           width: 200.w,
@@ -438,5 +452,16 @@ class _QuestionFormState extends State<QuestionForm> {
         ),
       ),
     );
+  }
+
+  int calculateDifferenceInYears(DateTime dateTime1, DateTime dateTime2) {
+    int yearsDiff = dateTime2.year - dateTime1.year;
+
+    // Check if we need to subtract 1 if the second date hasn't reached the same month and day yet.
+    if (dateTime2.month < dateTime1.month ||
+        (dateTime2.month == dateTime1.month && dateTime2.day < dateTime1.day)) {
+      yearsDiff--;
+    }
+    return yearsDiff.abs();
   }
 }

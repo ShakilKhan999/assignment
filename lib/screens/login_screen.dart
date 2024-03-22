@@ -17,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
-  UserController userController=Get.put(UserController());
+  UserController userController = Get.put(UserController());
   final IconData iconData = Icons.visibility;
   bool activeConnection = false;
   bool visiblepass = false;
@@ -154,23 +154,29 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           onPressed: () {
-                            userController.login(
-                                emailController.text,
-                                passwordController.text).then((value) async{
-                                  await userController.fetchUserData(userController.userId.value);
-                                  value?
-                                  userController.UserData[0].data[0].fullName.length>0?
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const DashboardScreen(),
-                                      )):
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const QuestionForm(),
-                                      ))
-                                      :userController.showToast("Login Failed");
+                            userController
+                                .login(emailController.text,
+                                    passwordController.text)
+                                .then((value) async {
+                              await userController
+                                  .fetchUserData(userController.userId.value);
+                              value
+                                  ? userController.UserData[0].data[0].fullName
+                                              .length >
+                                          0
+                                      ? Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const DashboardScreen(),
+                                          ))
+                                      : Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const QuestionForm(),
+                                          ))
+                                  : userController.showToast("Login Failed");
                             });
                           },
                           child: Text(
@@ -200,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>

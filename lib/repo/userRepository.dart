@@ -10,20 +10,18 @@ import 'package:http/http.dart' as http;
 
 import '../userModel.dart';
 
-class UserRepository{
-
-  UserController userController=Get.put(UserController());
+class UserRepository {
+  UserController userController = Get.put(UserController());
 
   Future<String> createUserDta(
-      {required String email, required String password,required double? lat,required double? long}) async {
-   EasyLoading.show();
-    var headers = {
-      'Content-Type': 'application/json'
-    };
-    var request = http.Request(
-        'POST',
-        Uri.parse(
-            'https://tiny-jade-chicken-hose.cyclic.app/api/v1/user'));
+      {required String email,
+      required String password,
+      required double? lat,
+      required double? long}) async {
+    EasyLoading.show();
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request('POST',
+        Uri.parse('https://tiny-jade-chicken-hose.cyclic.app/api/v1/user'));
     request.body = json.encode({
       "SubjectCategory": [],
       "email": email.trim(),
@@ -33,6 +31,7 @@ class UserRepository{
       "dateOfBirth": '',
       "Gender": '',
       "agreeToMarketing": false,
+      "correspond": false,
       "latitude": lat,
       "longitude": long,
       "createdAt": DateTime.now().toString(),
@@ -54,8 +53,9 @@ class UserRepository{
     }
   }
 
-  Future<UserModel> fetchUserData(String userId) async {
-    final url = Uri.parse('https://tiny-jade-chicken-hose.cyclic.app/api/v1/user/$userId');
+  Future<UserModel?> fetchUserData(String userId) async {
+    final url = Uri.parse(
+        'https://tiny-jade-chicken-hose.cyclic.app/api/v1/user/$userId');
 
     final response = await http.get(url);
 
@@ -63,13 +63,16 @@ class UserRepository{
       // If the server returns a 200 OK response, parse the JSON
       final Map<String, dynamic> userData = json.decode(response.body);
       print("User:\n${userData.toString()}");
+      if (response.body.toString().toLowerCase().contains("deleted")) {
+        userController.fetchReport.value = "Account Deleted By Admin";
+      }
       return UserModel.fromJson(userData);
     } else {
-      // If the server did not return a 200 OK response, throw an exception.
+      // If the server did not
+      // return a 200 OK response, throw an exception.
       throw Exception('Failed to load user data');
     }
   }
-
 
   Future<bool> loginUser(String email, String password) async {
     EasyLoading.show();
@@ -77,7 +80,9 @@ class UserRepository{
       'Content-Type': 'application/json',
     };
     var request = http.Request(
-        'GET', Uri.parse('https://tiny-jade-chicken-hose.cyclic.app/api/v1/user/log-in'));
+        'GET',
+        Uri.parse(
+            'https://tiny-jade-chicken-hose.cyclic.app/api/v1/user/log-in'));
     request.body = json.encode({
       "email": email.trim(),
       "password": password,
@@ -92,7 +97,7 @@ class UserRepository{
         var responseBody = await response.stream.bytesToString();
         var jsonResponse = json.decode(responseBody);
         var userId = jsonResponse['data'][0]['_id'];
-         userController.userId.value=userId;
+        userController.userId.value = userId;
         // Login successful
         return true;
       } else {
@@ -112,7 +117,8 @@ class UserRepository{
   }
 
   Future<bool> updateUserById({
-    required double? lat,required double? long,
+    required double? lat,
+    required double? long,
     required String userId,
     required String fullName,
     required String dateOfBirth,
@@ -120,16 +126,17 @@ class UserRepository{
     required bool agreeToMarketing,
     required bool correspond,
     required String updatedAt,
+    required List<String> subjects,
   }) async {
     //EasyLoading.show();
-    var headers = {
-      'Content-Type': 'application/json'
-    };
+    var headers = {'Content-Type': 'application/json'};
     var request = http.Request(
       'PATCH',
-      Uri.parse('https://tiny-jade-chicken-hose.cyclic.app/api/v1/user/update-user-by-id/$userId'),
+      Uri.parse(
+          'https://tiny-jade-chicken-hose.cyclic.app/api/v1/user/update-user-by-id/$userId'),
     );
     request.body = json.encode({
+      "SubjectCategory": subjects,
       "fullName": fullName,
       "dateOfBirth": dateOfBirth,
       "Gender": gender,
@@ -145,21 +152,23 @@ class UserRepository{
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-     // EasyLoading.dismiss();
+      // EasyLoading.dismiss();
       return true; // Update successful
     } else {
-      var error= await response.stream.bytesToString();
+      var error = await response.stream.bytesToString();
       print("Error Updating: ${error.toString()}");
       //EasyLoading.dismiss();
       return false; // Update failed
     }
   }
 
-
   Future<String> getPlaceName(double latitude, double longitude) async {
-    latitude=0.0;longitude=0.0;
-    final apiKey = 'AIzaSyAXE8HlQ-q9loKBtRHm6ykDOixQDGlNgFA'; // Replace with your API key
-    final apiUrl = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$apiKey';
+    latitude = 0.0;
+    longitude = 0.0;
+    final apiKey =
+        'AIzaSyAXE8HlQ-q9loKBtRHm6ykDOixQDGlNgFA'; // Replace with your API key
+    final apiUrl =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$apiKey';
 
     try {
       // Make an HTTP GET request
@@ -175,7 +184,7 @@ class UserRepository{
           // Extract the formatted address (place name) from the results
           final results = data['results'] as List<dynamic>;
           if (results.isNotEmpty) {
-            print("address:  "+results[0]['formatted_address']);
+            print("address:  " + results[0]['formatted_address']);
             return results[0]['formatted_address'];
           }
         }
