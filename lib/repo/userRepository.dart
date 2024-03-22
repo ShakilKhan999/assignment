@@ -16,13 +16,14 @@ class UserRepository{
 
   Future<String> createUserDta(
       {required String email, required String password,required double? lat,required double? long}) async {
+   EasyLoading.show();
     var headers = {
       'Content-Type': 'application/json'
     };
     var request = http.Request(
-        'PATCH',
+        'POST',
         Uri.parse(
-            'https://tiny-jade-chicken-hose.cyclic.app/api/v1/user/update-user-by-id/65f863b047431738286235eb'));
+            'https://tiny-jade-chicken-hose.cyclic.app/api/v1/user'));
     request.body = json.encode({
       "SubjectCategory": [],
       "email": email.trim(),
@@ -42,11 +43,13 @@ class UserRepository{
 
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
+      EasyLoading.dismiss();
       var responseBody = await response.stream.bytesToString();
       var jsonResponse = json.decode(responseBody);
       var userId = jsonResponse['data']['_id'];
       return userId; // Return user ID
     } else {
+      EasyLoading.dismiss();
       return 'failed'; // Return 'failed'
     }
   }
